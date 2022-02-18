@@ -1,0 +1,28 @@
+name: Terraform
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Go Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Check Format
+      id: fmt
+      run: terraform fmt -check -recursive
+      continue-on-error: false
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+      continue-on-error: false
